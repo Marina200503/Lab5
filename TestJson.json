@@ -1,0 +1,25 @@
+[
+  {
+    "id": 1,
+    "name": "123",
+    "coordinates": {
+      "x": 123,
+      "y": 123
+    },
+    "creationDate": "2024-04-25T19:47:48.114409700",
+    "minimalPoint": 23,
+    "difficulty": "EASY",
+    "author": {
+      "name": "123",
+      "birthday": "1901-12-12T00:00+02:30:17[Europe/Moscow]",
+      "height": 190,
+      "weight": 190.0,
+      "location": {
+        "x": 123.0,
+        "y": 123.0,
+        "z": 123,
+        "name": "123"
+      }
+    }
+  }
+]
