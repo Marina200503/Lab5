@@ -1,21 +1,29 @@
 package lib;
 
+import lib.models.User;
+
 import java.io.IOException;
 import java.io.StreamCorruptedException;
 import java.net.InetSocketAddress;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+//отправка и приём сообщений
 public class ExchangeChannel {
 
     private InetSocketAddress target;
     private SocketChannel channel;
+    private User user;
 
     public ExchangeChannel(InetSocketAddress target, InetSocketAddress host) {
         this(host);
         this.target = target;
+
     }
+
 
     public ExchangeChannel(InetSocketAddress host) {
         try {
@@ -26,6 +34,7 @@ public class ExchangeChannel {
         }
     }
 
+
     public boolean sendMesssage(Message message) {
         if (target == null) return false;
 
@@ -34,18 +43,20 @@ public class ExchangeChannel {
             if (!channel.isConnected()) {
                 channel.connect(target);
                 while (!channel.finishConnect()) {
-                    // Wait for connection to be established
+                    // Ожидание установления соединения
                 }
             }
             while (buffer.hasRemaining()) {
                 channel.write(buffer);
             }
-            return true;
         } catch (IOException e) {
-            return false;
+            System.err.println("Ошибка при отправке сообщения: " + e.getMessage());
         }
 
+
+        return true;
     }
+
 
     public Message recieveMessage() {
         ByteBuffer buffer = ByteBuffer.allocate(4000);
@@ -88,5 +99,9 @@ public class ExchangeChannel {
             //throw new RuntimeException(e);
         }
         return msg;
+    }
+
+    public User getUser() {
+        return user;
     }
 }

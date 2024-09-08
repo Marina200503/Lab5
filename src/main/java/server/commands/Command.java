@@ -1,9 +1,10 @@
 package server.commands;
 
-import server.commands.Describable;
-import server.commands.Executable;
+import lib.models.User;
+import server.managers.SQLManager;
 
 import java.util.Objects;
+
 
 public abstract class Command implements Executable, Describable {
     /**
@@ -53,6 +54,10 @@ public abstract class Command implements Executable, Describable {
         if (o == null || this.getClass() != o.getClass()) return false;
         Command command = (Command) o;
         return Objects.equals(this.name, command.name) && Objects.equals(this.description, command.description);
+    }
+    public int checkUser(User user) {
+         return SQLManager.authenticateUser(user.getUserName(), user.getPassword());
+
     }
 
 }

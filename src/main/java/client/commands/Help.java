@@ -18,13 +18,15 @@ public class Help extends Command {
 
     /**
      * Выполняет команду
+     *
      * @return Успешность выполнения команды.
      */
     @Override
     public boolean execute(String[] arguments) {
+
         commandManager.getCommands().values().forEach(command -> {
             console.printTable(command.getName(), command.getDescription());
         });
         return true;
+        }
     }
-}

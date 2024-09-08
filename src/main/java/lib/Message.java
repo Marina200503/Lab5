@@ -1,16 +1,29 @@
 package lib;
 
+import lib.models.User;
+
 import java.io.*;
 import java.nio.ByteBuffer;
-
+//создания сообщений
 public class Message implements Serializable {
     private String commandName;
 
     private Serializable entity;
+    private User user;
 
+    public User getUser() {
+        return user;
+    }
+
+    public Message(String commandName, Serializable entity, User user) {
+        this(commandName);
+        this.entity = entity;
+        this.user = user;
+    }
     public Message(String commandName, Serializable entity) {
         this(commandName);
         this.entity = entity;
+
     }
 
     public Message(String commandName) {
@@ -49,6 +62,8 @@ public class Message implements Serializable {
 
         this.entity = message.entity;
         this.commandName = message.commandName;
+        this.user = message.user;
+
 
     }
 
@@ -78,12 +93,16 @@ public class Message implements Serializable {
 
         this.entity = message.entity;
         this.commandName = message.commandName;
+        this.user = message.user;
+
+
 
     }
 
     public Serializable getEntity() {
         return entity;
     }
+
 
     public String getCommandName() {
         return commandName;

@@ -1,9 +1,12 @@
 package server.commands;
 
+import lib.Message;
 import lib.ServerExchangeChannel;
+import lib.models.User;
 import server.managers.CollectionManager;
-import server.managers.JsonManager;
+
 import lib.Console;
+import server.managers.SQLManager;
 
 import java.io.Serializable;
 import java.nio.channels.SocketChannel;
@@ -24,9 +27,13 @@ public class Save extends Command {
    }
 
     @Override
-    public boolean execute(Serializable ent, SocketChannel clientChannel) {
-        new JsonManager().save(collectionManager.getCollection());
-        console.println("МЫ СОХРАНЕНЫ!!!");
-        return true;
+    public boolean execute(Serializable ent, SocketChannel clientChannel, Message message) {
+        User user = message.getUser();
+        if (SQLManager.authenticateUser(user.getUserName(), user.getPassword()) != 0) {
+            SQLManager.createLabWork(collectionManager.getCollection());
+            console.println("МЫ СОХРАНЕНЫ!!!");
+            return true;
+        }
+        return false;
     }
 }

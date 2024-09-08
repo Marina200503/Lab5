@@ -19,13 +19,15 @@ public class ExecuteScriptFileName extends Command {
      */
     @Override
     public boolean execute(String[] arguments) {
-        if (arguments[1].isEmpty()) {
-            console.println("Неправильное количество аргументов!");
-            console.println("Использование: '" + getName() + "'");
-            return false;
+
+            if (arguments[1].isEmpty()) {
+                console.println("Неправильное количество аргументов!");
+                console.println("Использование: '" + getName() + "'");
+                return false;
+            }
+            console.println("Выполнение скрипта '" + arguments[1] + "'...");
+            return true;
+
         }
-        console.println("Выполнение скрипта '" + arguments[1] + "'...");
-        return true;
-    }
 
 }

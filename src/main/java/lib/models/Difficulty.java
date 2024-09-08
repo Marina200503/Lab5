@@ -30,6 +30,19 @@ public enum Difficulty{
         }
         return nameList.substring(0, nameList.length()-2);
     } //return строка со всеми элементами enum через запятую
-
+    public static Difficulty getEnum(Integer in){
+        if (in == 0){
+            return EASY;
+        }
+        if (in == 1){
+            return NORMAL;
+        }
+        if (in == 2){
+            return IMPOSSIBLE;
+        }
+        else {
+            return HOPELESS;
+        }
+    }
 
 }

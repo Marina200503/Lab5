@@ -10,6 +10,7 @@ import lib.Message;
 public class Show extends Command {
     private final Console console;
     private final ExchangeChannel exchangeChannel;
+
     public Show(Console console, ExchangeChannel exchangeChannel) {
         super("show", "вывести в стандартный поток вывода все элементы коллекции в строковом представлении");
         this.console = console;
@@ -19,14 +20,16 @@ public class Show extends Command {
 
     /**
      * Выполняет команду
+     *
      * @param arguments - аргументы команды
      * @return Успешность выполнения команды.
      */
     @Override
     public boolean execute(String[] arguments) {
-        exchangeChannel.sendMesssage(new Message("show"));
+
+        exchangeChannel.sendMesssage(new Message("show", null, Command.user));
         System.out.println(exchangeChannel.recieveMessage().getEntity());
         return true;
-    }
 
+    }
 }

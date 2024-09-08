@@ -11,7 +11,6 @@ import java.net.InetSocketAddress;
 public class ClientMain {
 
     public static void main(String[] args) {
-
         InetSocketAddress target = new InetSocketAddress(1234);
         InetSocketAddress host = new InetSocketAddress(Integer.valueOf(System.getenv("CLIENT_PORT")));//add check
         ExchangeChannel channel = new ExchangeChannel(target, host);
@@ -19,7 +18,6 @@ public class ClientMain {
         CommandManager commandManager = new CommandManager(console, channel);
 
         new Runner(console, commandManager).interactiveMode();
-
     }
 
 }

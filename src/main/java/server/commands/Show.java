@@ -2,8 +2,10 @@ package server.commands;
 
 import lib.Message;
 import lib.ServerExchangeChannel;
+import lib.models.User;
 import server.managers.CollectionManager;
 import lib.Console;
+import server.managers.SQLManager;
 
 import java.io.Serializable;
 import java.nio.channels.SocketChannel;
@@ -25,9 +27,13 @@ public class Show extends Command{
 
 
     @Override
-    public boolean execute(Serializable ent, SocketChannel clientChannel) {
-        exchangeChannel.sendMessage(clientChannel, new Message("show", collectionManager.getCollection().toString()));
-        return true;
+    public boolean execute(Serializable ent, SocketChannel clientChannel, Message message) {
+        User user = message.getUser();
+        if (SQLManager.authenticateUser(user.getUserName(), user.getPassword()) != 0) {
+            exchangeChannel.sendMessage(clientChannel, new Message("show", collectionManager.getCollection().toString()));
+            return true;
+        }
+        return false;
     }
 
 }

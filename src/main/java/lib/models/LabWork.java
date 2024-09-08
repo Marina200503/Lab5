@@ -18,7 +18,18 @@ public class LabWork implements Validatable, Comparable<LabWork>, Serializable {
     private long minimalPoint; //Значение поля должно быть больше 0
     private Difficulty difficulty; //Поле может быть null
     private Person author; //Поле может быть null
-    public LabWork(long id, String name, Coordinates coordinates, Long minimalPoint, Difficulty difficulty, Person author) {
+    private int user_id;
+    public LabWork(long id, String name, Coordinates coordinates, Long minimalPoint, Difficulty difficulty, LocalDateTime creationDate, Person author, int user_id) {
+        this.id = id;
+        this.name = name;
+        this.coordinates=coordinates;
+        this.creationDate = creationDate;
+        this.minimalPoint = minimalPoint;
+        this.difficulty = difficulty;
+        this.author = author;
+        this.user_id = user_id;
+    }
+    public LabWork(long id, String name, Coordinates coordinates, Long minimalPoint, Difficulty difficulty, Person author, int user_id) {
         this.id = id;
         this.name = name;
         this.coordinates=coordinates;
@@ -26,7 +37,13 @@ public class LabWork implements Validatable, Comparable<LabWork>, Serializable {
         this.minimalPoint = minimalPoint;
         this.difficulty = difficulty;
         this.author = author;
+        this.user_id = user_id;
     }
+
+    public int getUser_id() {
+        return user_id;
+    }
+
     /**
      * Проверяет поле на валидность
      * @return Успешность выполнения команды.
@@ -64,10 +81,20 @@ public class LabWork implements Validatable, Comparable<LabWork>, Serializable {
     public String getName() {
         return name;
     }
+
+    public Coordinates getCoordinates() {
+        return coordinates;
+    }
+
+    public Person getAuthor() {
+        return author;
+    }
+
     /**
      * Возвращает миномальный балл лабораторно работы
      * @return минимальный балл лабораторно работы.
      */
+
 
     public Long getMinimalPoint() {
         return minimalPoint;
@@ -79,11 +106,17 @@ public class LabWork implements Validatable, Comparable<LabWork>, Serializable {
     public Difficulty getDifficulty() {
         return difficulty;
     }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
     /**
      * Сравнивает объект лабораторной работы
      * @param o - объекты сравнения
      * @return Успешность сравнения.
      */
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

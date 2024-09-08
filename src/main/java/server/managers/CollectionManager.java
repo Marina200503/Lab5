@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * оперирует коллекцией
@@ -16,6 +18,7 @@ public class CollectionManager {
     private LinkedList<LabWork> labWorks = new LinkedList<>();
     private LocalDateTime lastInitTime;
     private LocalDateTime lastSaveTime;
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
 
     public CollectionManager() {
@@ -51,9 +54,15 @@ public class CollectionManager {
      * @return успешность выполнения команды
      */
     public boolean add(LabWork labWork) {
-        if (labWork == null) return false;
-        labWorks.add(labWork);
-        return true;
+        lock.writeLock().lock();
+        try {
+            if (labWork == null) return false;
+            labWorks.add(labWork);
+            return true;
+        } finally
+        {
+            lock.writeLock().unlock();
+        }
     }
     /**
      * считает количество лабораторных работ, сложность которых больше заданной
@@ -62,10 +71,15 @@ public class CollectionManager {
      * @return количество лабораторных работ
      */
     public int countGreaterThanDifficulty(Difficulty difficulty) {
-        return (int)(labWorks
-                .stream()
-                .filter(e -> (e.getDifficulty().compareTo(difficulty) > 0))
-                .count());
+        lock.readLock().lock();
+        try {
+            return (int)(labWorks
+                    .stream()
+                    .filter(e -> (e.getDifficulty().compareTo(difficulty) > 0))
+                    .count());
+        } finally {
+            lock.readLock().unlock();
+        }
     }
     /**
      * Добавляет элемент по заданному id
@@ -74,11 +88,17 @@ public class CollectionManager {
      * @return объект лабораторной работы
      */
     public LabWork byId(long id) {
-        return labWorks
-                .stream()
-                .filter(e -> e.getId() == id) //e.getId() = id если tru, возвращает, иначе в этом стриме его не существует
-                .findFirst()//вытаскиваем
-                .orElse(null); //возвращаем (если есть), иначе null
+        lock.writeLock().lock();
+        try {
+            return labWorks
+                    .stream()
+                    .filter(e -> e.getId() == id) //e.getId() = id если tru, возвращает, иначе в этом стриме его не существует
+                    .findFirst()//вытаскиваем
+                    .orElse(null); //возвращаем (если есть), иначе null
+        } finally
+        {
+            lock.writeLock().unlock();
+        }
     }
     /**
      * Возвращает не занятый id
@@ -95,11 +115,17 @@ public class CollectionManager {
      * @return отсортированную сложность
      */
     public List<Difficulty> getSortedByDifficulty() {
-        return labWorks
-                .stream()
-                .sorted(Comparator.reverseOrder())
-                .map(lw -> lw.getDifficulty())
-                .toList();
+        lock.readLock().lock();
+        try {
+            return labWorks
+                    .stream()
+                    .sorted(Comparator.reverseOrder())
+                    .map(lw -> lw.getDifficulty())
+                    .toList();
+        } finally {
+            lock.readLock().unlock();
+        }
+
     }
 
     /**
@@ -110,7 +136,7 @@ public class CollectionManager {
     public boolean loadCollection() {
         labWorks.clear();
 
-        labWorks = (LinkedList<LabWork>) new JsonManager().load();
+        labWorks = SQLManager.selectAllData();
         lastInitTime = LocalDateTime.now();
         return true;
     }

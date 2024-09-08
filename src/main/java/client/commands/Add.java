@@ -30,15 +30,15 @@ public class Add extends Command {
     public boolean execute(String[] arguments) {
         console.println("* Создание новой лабораторной работы:");
         LabWork d = Ask.askLabWork(console);
-
         if (d != null && d.validate()) {
-            exchangeChannel.sendMesssage(new Message("add", d));
+            exchangeChannel.sendMesssage(new Message("add", d, Command.user));
             console.println("Лабораторная работа успешно добавлена!");
             return true;
         }
         else{
             console.printError("Поля лабораторной работы не валидны! Лабораторная работа не создана!");
             return false;
-        }
+        }}
+
+
     }
-}

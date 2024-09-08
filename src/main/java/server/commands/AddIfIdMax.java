@@ -1,9 +1,12 @@
 package server.commands;
 
 import lib.Console;
+import lib.Message;
 import lib.ServerExchangeChannel;
 import lib.models.LabWork;
+import lib.models.User;
 import server.managers.CollectionManager;
+import server.managers.SQLManager;
 
 import java.io.Serializable;
 import java.nio.channels.SocketChannel;
@@ -24,36 +27,33 @@ public class AddIfIdMax extends Command {
         this.exchangeChannel = exchangeChannel;
     }
 
-    /**
-     * выполняет команду
-     *
-     * @param arguments     - аргументы команды
-     * @param clientChannel
-     * @return успешность выполнения команды
-     */
-    @Override
-    public boolean execute(Serializable mLabWork, SocketChannel clientChannel) {
-        LabWork receivedLabWork = (LabWork)mLabWork;
-        ((LabWork)mLabWork).setId(collectionManager.getFreeId());
-        if (receivedLabWork != null && receivedLabWork.validate()) {
-            Long maxMinimalPoint = 0L;
 
-            for (LabWork labWork : collectionManager.getCollection()) {
-                if (maxMinimalPoint < labWork.getMinimalPoint()) {
-                    maxMinimalPoint = labWork.getMinimalPoint();
+    @Override
+    public boolean execute(Serializable mLabWork, SocketChannel clientChannel, Message message) {
+        LabWork receivedLabWork = (LabWork) mLabWork;
+        User user = message.getUser();
+        if (SQLManager.authenticateUser(user.getUserName(), user.getPassword()) != 0) {
+            if (receivedLabWork != null && receivedLabWork.validate()) {
+                Long maxMinimalPoint = 0L;
+
+                for (LabWork labWork : collectionManager.getCollection()) {
+                    if (maxMinimalPoint < labWork.getMinimalPoint()) {
+                        maxMinimalPoint = labWork.getMinimalPoint();
+                    }
+                }
+                if (maxMinimalPoint == 0L) {
+                    return false;
+                }
+                if (receivedLabWork.getMinimalPoint() > maxMinimalPoint) {
+                    collectionManager.add(receivedLabWork);
+                    return true;
+                } else {
+                    return false;
                 }
             }
-            if (maxMinimalPoint == 0L) {
-                return false;
-            }
-            if (receivedLabWork.getMinimalPoint() > maxMinimalPoint) {
-                collectionManager.add(receivedLabWork);
-                return true;
-            } else {
-                return false;
-            }
+            return false;
         }
-        return false;
-    }
+        else{return false;}
 
+    }
 }

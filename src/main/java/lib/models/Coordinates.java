@@ -25,6 +25,15 @@ public class Coordinates implements Validatable, Serializable {
         }
         return y!=null;
     }
+
+    public Integer getX() {
+        return x;
+    }
+
+    public Long getY() {
+        return y;
+    }
+
     /**
      * Возвращает строковое представление объектов координат
      * @return строковое представление объектов координат.
@@ -57,4 +66,6 @@ public class Coordinates implements Validatable, Serializable {
         Coordinates that=(Coordinates) o;
         return Objects.equals(x, that.x)&&Objects.equals(y,that.y);
     }
+    public float getCoordinationX(){return x;}
+    public float getCoordinationY(){return y;}
 }

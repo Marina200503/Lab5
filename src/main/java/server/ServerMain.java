@@ -1,6 +1,7 @@
 package server;
 
 import lib.Console;
+import lib.Message;
 import lib.ServerExchangeChannel;
 import lib.StandardConsole;
 import server.managers.CollectionManager;
@@ -20,7 +21,7 @@ public class ServerMain {
     static CollectionManager collectionManager;
     static ServerExchangeChannel exchangeChannel;
     static CommandManager commandManager;
-
+//запуск серверной части приложения
     public static void main(String[] args) {
         collectionManager = new CollectionManager();
         collectionManager.loadCollection();
@@ -34,7 +35,7 @@ public class ServerMain {
                 System.out.print("$ ");
                 var t = in.nextLine();
                 if (t.equals("save"))
-                    commandManager.getCommands().get("save").execute(new String[]{"save", ""}, null);
+                    commandManager.getCommands().get("save").execute(new String[]{"save", ""}, null, null);
                 if (t.equals("exit"))
                     System.exit(0);
             }

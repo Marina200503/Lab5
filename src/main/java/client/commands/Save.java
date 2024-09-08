@@ -11,11 +11,12 @@ public class Save extends Command {
     private final Console console;
     private final ExchangeChannel exchangeChannel;
 
-   public Save(Console console, ExchangeChannel exchangeChannel) {
+    public Save(Console console, ExchangeChannel exchangeChannel) {
         super("save", "сохранить коллекцию в файл");
         this.console = console;
         this.exchangeChannel = exchangeChannel;
-   }
+    }
+
     /**
      * выполняет команду
      *
@@ -24,9 +25,11 @@ public class Save extends Command {
      */
     @Override
     public boolean execute(String[] arguments) {
-        exchangeChannel.sendMesssage(new Message("save"));
+
+        exchangeChannel.sendMesssage(new Message("save", null, Command.user));
         //new JsonManager().save(collectionManager.getCollection());
         console.println("МЫ СОХРАНЕНЫ!!!");
         return true;
+
     }
 }

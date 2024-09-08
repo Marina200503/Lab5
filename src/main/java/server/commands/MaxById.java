@@ -4,7 +4,9 @@ import lib.Console;
 import lib.Message;
 import lib.ServerExchangeChannel;
 import lib.models.LabWork;
+import lib.models.User;
 import server.managers.CollectionManager;
+import server.managers.SQLManager;
 
 import java.io.Serializable;
 import java.nio.channels.SocketChannel;
@@ -22,26 +24,24 @@ public class MaxById extends Command {
         this.collectionManager = collectionManager;
         this.exchangeChannel = exchangeChannel;
     }
-    /**
-     * выполняет команду
-     *
-     * @param arguments     - аргументы команды
-     * @param clientChannel
-     * @return успешность выполнения команды
-     */
+
     @Override
-    public boolean execute(Serializable ent, SocketChannel clientChannel) {
-        LabWork labWorkWithMaxId = null;
-        for (LabWork labWork: collectionManager.getCollection()){
-            if (labWorkWithMaxId == null || labWorkWithMaxId.getId() < labWork.getId()) {
-                labWorkWithMaxId = labWork;
+    public boolean execute(Serializable ent, SocketChannel clientChannel, Message message) {
+        User user = message.getUser();
+        if (SQLManager.authenticateUser(user.getUserName(), user.getPassword()) != 0) {
+            LabWork labWorkWithMaxId = null;
+            for (LabWork labWork : collectionManager.getCollection()) {
+                if (labWorkWithMaxId == null || labWorkWithMaxId.getId() < labWork.getId()) {
+                    labWorkWithMaxId = labWork;
+                }
             }
+            if (labWorkWithMaxId == null) {
+                console.println("Коллекция пуста!");
+                return false;
+            }
+            exchangeChannel.sendMessage(clientChannel, new Message("max_by_id", labWorkWithMaxId));
+            return true;
         }
-        if (labWorkWithMaxId == null) {
-            console.println("Коллекция пуста!");
-            return false;
-        }
-        exchangeChannel.sendMessage(clientChannel, new Message("max_by_id", labWorkWithMaxId));
-        return true;
+        else{ return false;}
     }
 }

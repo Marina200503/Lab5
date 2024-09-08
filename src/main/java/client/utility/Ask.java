@@ -1,5 +1,6 @@
 package client.utility;
 
+import client.commands.Command;
 import lib.Console;
 import lib.models.*;
 
@@ -43,7 +44,7 @@ public class Ask {
             }
             Difficulty difficulty = askDifficulty(console);
             Person author = askPerson(console);
-            return new LabWork(0, name, coordinates, minimalPoint, difficulty, author);
+            return new LabWork(0, name, coordinates, minimalPoint, difficulty, author, Command.user.getUser_id());
         } catch (NoSuchElementException | IllegalStateException e) {
             console.printError("Ошибка чтения");
             return null;
@@ -250,6 +251,28 @@ public class Ask {
             }
             Location location = askLocation(console);
             return new Person(name, birthday, height, weight, location);
+        } catch (NoSuchElementException | IllegalStateException e) {
+            console.printError("Ошибка чтения");
+            return null;
+        }
+    }
+    public static User askUser(Console console){
+        try{
+            console.print("userName(не пустое): ");
+            String username;
+            while (true) {
+                username = console.readln().trim();
+                if (!username.isEmpty()) break;
+                console.print("userName(не пустое): ");
+            }
+            console.print("password(не пустое): ");
+            String password;
+            while (true) {
+                password = console.readln().trim();
+                if (!password.isEmpty()) break;
+                console.print("password(не пустое): ");
+            }
+            return new User(username, password);
         } catch (NoSuchElementException | IllegalStateException e) {
             console.printError("Ошибка чтения");
             return null;

@@ -28,6 +28,8 @@ public class CommandManager {
         register("print_field_descending_difficulty", new PrintFieldDescendingDifficulty(console, collectionManager, exchangeChannel));
         register("count_greater_than_difficulty", new CountGreaterThanDifficulty(console, collectionManager, exchangeChannel));
         register("head", new Head(console, collectionManager, exchangeChannel));
+        register("register", new Register(console, collectionManager, exchangeChannel));
+        register("login", new Login(console, collectionManager, exchangeChannel));
     }
 
     /**

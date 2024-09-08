@@ -22,18 +22,22 @@ public class Info extends Command {
 
     /**
      * Выполняет команду
+     *
      * @return Успешность выполнения команды.
      */
     @Override
     public boolean execute(String[] arguments) {
 
-        exchangeChannel.sendMesssage(new Message("info"));
-        Message message = exchangeChannel.recieveMessage();
-        if (message == null)
-            return false;
 
-        List<String> list = (List<String>)message.getEntity();
-        System.out.println(list);
-        return true;
+
+    exchangeChannel.sendMesssage(new Message("info",null, Command.user));
+    Message message = exchangeChannel.recieveMessage();
+    if (message == null)
+        return false;
+
+    List<String> list = (List<String>) message.getEntity();
+    System.out.println(list);
+    return true;
+
     }
 }

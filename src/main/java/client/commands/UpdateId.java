@@ -22,24 +22,26 @@ public class UpdateId extends Command {
 
     /**
      * выполняет команду
+     *
      * @param arguments - аргументы команды
      * @return успешность выполнения команды
      */
     @Override
     public boolean execute(String[] arguments) {
-        long id = -1L;
-        try {
-            id = Integer.parseInt(arguments[1].trim());
-        } catch (NumberFormatException e) {
-            console.println("ID не распознан");
-            return false;
-        }
 
-        console.println("* Создание новой лабораторной работы:");
-        LabWork receivedLabWork = Ask.askLabWork(console);
-        receivedLabWork.setId(id);
+            long id = -1L;
+            try {
+                id = Integer.parseInt(arguments[1].trim());
+            } catch (NumberFormatException e) {
+                console.println("ID не распознан");
+                return false;
+            }
 
-        exchangeChannel.sendMesssage(new Message("update_id", receivedLabWork));
-        return true;
+            console.println("* Создание новой лабораторной работы:");
+            LabWork receivedLabWork = Ask.askLabWork(console);
+            receivedLabWork.setId(id);
+
+            exchangeChannel.sendMesssage(new Message("update_id", receivedLabWork, Command.user));
+            return true;
     }
 }

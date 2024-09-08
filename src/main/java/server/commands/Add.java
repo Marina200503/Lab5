@@ -6,7 +6,9 @@ import lib.ExchangeChannel;
 import lib.Message;
 import lib.ServerExchangeChannel;
 import lib.models.LabWork;
+import lib.models.User;
 import server.managers.CollectionManager;
+import server.managers.SQLManager;
 
 import java.io.Serializable;
 import java.nio.channels.SocketChannel;
@@ -30,9 +32,13 @@ public class Add extends Command {
 
 
     @Override
-    public boolean execute(Serializable labwork, SocketChannel clientChannel) {
-        ((LabWork)labwork).setId(collectionManager.getFreeId());
+    public boolean execute(Serializable labwork, SocketChannel clientChannel, Message message) {
+        User user = message.getUser();
+        if (SQLManager.authenticateUser(user.getUserName(), user.getPassword())!= 0){
         collectionManager.add((LabWork)labwork);
-        return true;
+        return true;}
+        else{
+            return false;
+        }
     }
 }

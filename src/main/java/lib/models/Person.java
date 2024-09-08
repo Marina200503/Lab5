@@ -3,6 +3,7 @@ package lib.models;
 import client.utility.Validatable;
 
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 /**
@@ -20,6 +21,10 @@ public class Person implements Validatable, Serializable {
         this.height = height;
         this.weight = weight;
         this.location = location;
+    }
+
+    public Location getLocation() {
+        return location;
     }
 
     /**
@@ -45,6 +50,11 @@ public class Person implements Validatable, Serializable {
         public String getName() {
             return name;
         }
+        public ZonedDateTime getBirthday(){return  birthday;}
+        public Long getHeight(){return height;
+        }
+        public Float getWeight(){return weight;}
+
     /**
      * Сравнивает объект автор
      * @param o - объекты сравнения

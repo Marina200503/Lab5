@@ -14,6 +14,8 @@ import java.util.Map;
 public class CommandManager {
     private final Map<String, Command> commands = new LinkedHashMap<>();
 
+    private final Map<String, Command> unauthorizedCommands = new LinkedHashMap<>();
+
     public CommandManager(Console console, ExchangeChannel exchangeChannel) {
         register("help", new Help(console, this));
         register("info", new Info(console, exchangeChannel));
@@ -31,6 +33,10 @@ public class CommandManager {
         register("print_field_descending_difficulty", new PrintFieldDescendingDifficulty(console, exchangeChannel));
         register("count_greater_than_difficulty", new CountGreaterThanDifficulty(console, exchangeChannel));
         register("head", new Head(console, exchangeChannel));
+
+        unauthorizedCommands.put("help", new Help(console, this));
+        unauthorizedCommands.put("login", new Login(console, exchangeChannel));
+        unauthorizedCommands.put("register", new Register(console, exchangeChannel));
     }
 
     /**
@@ -45,6 +51,8 @@ public class CommandManager {
      * @return словарь команд
      */
     public Map<String, Command> getCommands() {
+        if (Command.user == null || Command.user.getUser_id() == 0)
+            return unauthorizedCommands;
         return commands;
     }
 }

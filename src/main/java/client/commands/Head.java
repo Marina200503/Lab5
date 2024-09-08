@@ -3,7 +3,9 @@ package client.commands;
 import lib.Console;
 import lib.ExchangeChannel;
 import lib.Message;
+import lib.models.User;
 import lib.models.LabWork;
+import server.managers.SQLManager;
 
 /**
  * выводит первый элемент коллекции
@@ -21,14 +23,18 @@ public class Head extends Command {
 
     /**
      * Выполняет команду
+     *
      * @return Успешность выполнения команды.
      */
     @Override
     public boolean execute(String[] arguments) {
-        exchangeChannel.sendMesssage(new Message("head", null));
-        head = (LabWork)exchangeChannel.recieveMessage().getEntity();
+
+        exchangeChannel.sendMesssage(new Message("head", null, Command.user));
+        Message mess = exchangeChannel.recieveMessage();
+        head = (LabWork) mess.getEntity();
         //head = collectionManager.getCollection().getFirst();
         console.println("Первый элемент коллекции: " + head);
         return true;
+
+        }
     }
-}

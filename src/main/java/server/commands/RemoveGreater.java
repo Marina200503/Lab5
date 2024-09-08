@@ -1,10 +1,14 @@
 package server.commands;
+import lib.Message;
 import lib.ServerExchangeChannel;
+import lib.models.User;
 import server.managers.CollectionManager;
 import lib.models.LabWork;
 import lib.Console;
+import server.managers.SQLManager;
 
 import java.io.Serializable;
+import java.nio.channels.MembershipKey;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 
@@ -24,20 +28,26 @@ public class RemoveGreater extends Command{
     }
 
     @Override
-    public boolean execute(Serializable mlabWork, SocketChannel clientChannel) {
-        LabWork receivedLabWork = (LabWork)mlabWork;
-        if (receivedLabWork != null && receivedLabWork.validate()) {
-            int i = 0;
-            ArrayList<LabWork> needRemove = new ArrayList<LabWork>();
-            for (LabWork labWork : collectionManager.getCollection()) {
-                if (labWork.getMinimalPoint() > receivedLabWork.getMinimalPoint()){
-                    needRemove.add(labWork);
-                    i++;
+    public boolean execute(Serializable mlabWork, SocketChannel clientChannel, Message message) {
+        User user = message.getUser();
+        if (SQLManager.authenticateUser(user.getUserName(), user.getPassword()) != 0) {
+            LabWork receivedLabWork = (LabWork) mlabWork;
+            if (receivedLabWork != null && receivedLabWork.validate()) {
+                int i = 0;
+                ArrayList<LabWork> needRemove = new ArrayList<LabWork>();
+                for (LabWork labWork : collectionManager.getCollection()) {
+                    if (user.getUser_id() == (labWork).getUser_id() &&
+                            labWork.getMinimalPoint() > receivedLabWork.getMinimalPoint()) {
+                        needRemove.add(labWork);
+                        i++;
+                    }
                 }
+                for (LabWork labWork : needRemove)
+                    collectionManager.getCollection().remove(labWork);
+                return true;
+            } else {
+                return false;
             }
-            for (LabWork labWork:needRemove)
-                collectionManager.getCollection().remove(labWork);
-            return true;
         } else {
             return false;
         }

@@ -1,7 +1,10 @@
 package server.commands;
 
 import lib.Console;
+import lib.Message;
+import lib.models.User;
 import server.managers.CommandManager;
+import server.managers.SQLManager;
 
 import java.io.Serializable;
 import java.nio.channels.SocketChannel;
@@ -24,10 +27,15 @@ public class Help extends Command {
      * @return Успешность выполнения команды.
      */
     @Override
-    public boolean execute(Serializable ent, SocketChannel clientChannel) {
-        commandManager.getCommands().values().forEach(command -> {
-            console.printTable(command.getName(), command.getDescription());
-        });
-        return true;
+    public boolean execute(Serializable ent, SocketChannel clientChannel, Message message) {
+        User user = message.getUser();
+        if (SQLManager.authenticateUser(user.getUserName(), user.getPassword()) != 0) {
+            commandManager.getCommands().values().forEach(command -> {
+                console.printTable(command.getName(), command.getDescription());
+            });
+            return true;
+        } else {
+            return false;
+        }
     }
 }

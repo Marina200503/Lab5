@@ -2,9 +2,11 @@ package server.commands;
 
 import lib.Message;
 import lib.ServerExchangeChannel;
+import lib.models.User;
 import server.managers.CollectionManager;
 import lib.models.Difficulty;
 import lib.Console;
+import server.managers.SQLManager;
 
 import java.io.Serializable;
 import java.nio.channels.SocketChannel;
@@ -25,12 +27,16 @@ public class CountGreaterThanDifficulty extends Command{
     }
 
     @Override
-    public boolean execute(Serializable difficulty, SocketChannel clientChannel) {
+    public boolean execute(Serializable difficulty, SocketChannel clientChannel, Message message) {
+        User user = message.getUser();
+        if (SQLManager.authenticateUser(user.getUserName(), user.getPassword()) != 0) {
+            Difficulty userDifficulty = (Difficulty) difficulty; // Считывание с консоли и проверка на валидность
+            int k = collectionManager.countGreaterThanDifficulty(userDifficulty);
 
-        Difficulty userDifficulty = (Difficulty)difficulty; // Считывание с консоли и проверка на валидность
-        int k = collectionManager.countGreaterThanDifficulty(userDifficulty);
-
-        exchangeChannel.sendMessage(clientChannel, new Message("count_greater_than_difficulty", k));
-        return true;
+            exchangeChannel.sendMessage(clientChannel, new Message("count_greater_than_difficulty", k));
+            return true;
+        } else {
+            return false;
+        }
     }
 }

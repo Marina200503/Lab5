@@ -2,6 +2,8 @@ package client.commands;
 
 import client.utility.Describable;
 import client.utility.Executable;
+import lib.models.User;
+import server.managers.SQLManager;
 
 import java.util.Objects;
 
@@ -11,6 +13,7 @@ public abstract class Command implements Executable, Describable {
      */
     private final String name;
     private final String description;
+    public static User user;
 
     public Command(String name, String description){
         this.name=name;
@@ -28,6 +31,7 @@ public abstract class Command implements Executable, Describable {
     public String getDescription(){
         return description;
     }
+
     /**
      * @return имя и описание команды
      */
@@ -53,5 +57,7 @@ public abstract class Command implements Executable, Describable {
         Command command = (Command) o;
         return Objects.equals(this.name, command.name) && Objects.equals(this.description, command.description);
     }
+
+
 
 }

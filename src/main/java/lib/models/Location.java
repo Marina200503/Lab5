@@ -17,6 +17,23 @@ public class Location implements Serializable {
         this.z = z;
         this.name = name;
     }
+
+    public float getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public Long getZ() {
+        return z;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     /**
      * Проверка на валидность
      * @return успешность сравнения.
@@ -34,4 +51,8 @@ public class Location implements Serializable {
         locationInfo += " X: " + x + ", Y: " + y + ", Z: " + z + ", Name: " + name;
         return locationInfo;
     }
+    public float getLocationX(){return x;}
+    public float getLocationY(){return y;}
+    public Long getLocationZ(){return z;}
+    public String getLocationName(){return name;}
 }

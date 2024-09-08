@@ -3,7 +3,9 @@ package server.commands;
 import lib.Console;
 import lib.Message;
 import lib.ServerExchangeChannel;
+import lib.models.User;
 import server.managers.CollectionManager;
+import server.managers.SQLManager;
 
 import java.io.Serializable;
 import java.nio.channels.SocketChannel;
@@ -30,21 +32,27 @@ public class Info extends Command{
      * @return Успешность выполнения команды.
      */
     @Override
-    public boolean execute(Serializable ent, SocketChannel clientChannel) {
-        LocalDateTime lastInitTime = collectionManager.getLastInitTime();
-        String lastInitTimeString = (lastInitTime == null) ? "в данной сессии инициализации еще не происходило" : //условие ? значение_если_истина : значение_если_ложь.
-                lastInitTime.toLocalDate().toString() + " " + lastInitTime.toLocalTime().toString();
+    public boolean execute(Serializable ent, SocketChannel clientChannel, Message message) {
+        User user = message.getUser();
+        if (SQLManager.authenticateUser(user.getUserName(), user.getPassword()) != 0) {
+            LocalDateTime lastInitTime = collectionManager.getLastInitTime();
+            String lastInitTimeString = (lastInitTime == null) ? "в данной сессии инициализации еще не происходило" : //условие ? значение_если_истина : значение_если_ложь.
+                    lastInitTime.toLocalDate().toString() + " " + lastInitTime.toLocalTime().toString();
 
-        LocalDateTime lastSaveTime = collectionManager.getLastSaveTime();
-        String lastSaveTimeString = (lastSaveTime == null) ? "в данной сессии сохранения еще не происходило" :
-                lastSaveTime.toLocalDate().toString() + " " + lastSaveTime.toLocalTime().toString();
+            LocalDateTime lastSaveTime = collectionManager.getLastSaveTime();
+            String lastSaveTimeString = (lastSaveTime == null) ? "в данной сессии сохранения еще не происходило" :
+                    lastSaveTime.toLocalDate().toString() + " " + lastSaveTime.toLocalTime().toString();
 
 
-        List list = List.of("Сведения о коллекции:",
-        " Тип: " + collectionManager.getCollection().getClass().toString(),
-        " Количество элементов: " + collectionManager.getCollection().size(),
-        " Дата последнего сохранения: " + lastSaveTimeString,
-        " Дата последней инициализации: " + lastInitTimeString);
-        return exchangeChannel.sendMessage(clientChannel, new Message("info", (Serializable) list));
-}
+            List list = List.of("Сведения о коллекции:",
+                    " Тип: " + collectionManager.getCollection().getClass().toString(),
+                    " Количество элементов: " + collectionManager.getCollection().size(),
+                    " Дата последнего сохранения: " + lastSaveTimeString,
+                    " Дата последней инициализации: " + lastInitTimeString);
+            return exchangeChannel.sendMessage(clientChannel, new Message("info", (Serializable) list));
+        }
+        else {
+            return false;
+        }
+    }
 }
